@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#10251d">
+<title>CAPITAL KING — Sales Desk</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1511;--panel:#13221b;--panel2:#1a2c23;--line:#294337;--text:#edf5ef;--muted:#9bb1a3;--green:#9bd6ad;--gold:#e7c77a;--red:#f0a2a2}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 400px at 80% -10%,#1d3a2c 0%,transparent 60%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+main{max-width:1120px;margin:auto;padding:28px 18px 60px}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:24px}.brand{font-size:12px;letter-spacing:.18em;color:var(--green);font-weight:800}.top h1{font-size:clamp(25px,5vw,38px);margin:5px 0 2px}.sub{color:var(--muted);margin:0}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 11px;color:var(--green);font-size:12px;white-space:nowrap}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:22px 0}.metric,.panel{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px}.metric{padding:15px}.metric small{display:block;color:var(--muted)}.metric strong{display:block;font-size:26px;margin-top:5px}
+.layout{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}.panel{padding:18px}.panel h2{font-size:17px;margin:0 0 14px}.field{margin:11px 0}.field label{display:block;color:var(--muted);font-size:12px;margin-bottom:5px}input,select,textarea{width:100%;border:1px solid var(--line);background:#0d1913;color:var(--text);border-radius:9px;padding:11px;font:inherit;min-width:0}textarea{min-height:74px;resize:vertical}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:10px 13px;border-radius:9px;font-weight:650;cursor:pointer}.btn.primary{background:var(--green);border-color:var(--green);color:#10251b}.btn.danger{color:var(--red)}.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}.actions{display:flex;gap:8px;flex-wrap:wrap}.full{width:100%;margin-top:8px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}.toolbar input{flex:1;min-width:150px}.toolbar select{width:auto;min-width:135px}
+.tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px}table{border-collapse:collapse;width:100%;min-width:620px}th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;background:#102018}tr:last-child td{border-bottom:0}.name{font-weight:700}.detail{color:var(--muted);font-size:12px}.status{display:inline-block;border:1px solid var(--line);padding:3px 8px;border-radius:999px;font-size:11px;white-space:nowrap}.empty{text-align:center;padding:34px;color:var(--muted)}.note{font-size:12px;color:var(--muted);margin-top:12px}.rowbtn{font-size:12px;padding:6px 8px}.foot{margin-top:20px;color:var(--muted);font-size:12px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}.top{align-items:flex-start;flex-direction:column}}
+</style>
+</head>
+<body>
+<main>
+<header class="top"><div><div class="brand">CAPITAL KING • OPERATIONS</div><h1>Sales Desk</h1><p class="sub">A simple place to track prospects, offers and follow-ups.</p></div><span class="pill">Offline-first • No account required</span></header>
+<section class="metrics" aria-label="Pipeline summary">
+<div class="metric"><small>All prospects</small><strong id="mTotal">0</strong></div><div class="metric"><small>Follow-ups due</small><strong id="mDue">0</strong></div><div class="metric"><small>Offers sent</small><strong id="mOffers">0</strong></div><div class="metric"><small>Won</small><strong id="mWon">0</strong></div>
+</section>
+<div class="layout">
+<section class="panel"><h2 id="formTitle">Add a prospect</h2>
+<form id="leadForm">
+<input type="hidden" id="editId">
+<div class="field"><label for="name">Person or business *</label><input id="name" required maxlength="100" placeholder="Business name or contact"></div>
+<div class="field"><label for="offer">Offer</label><select id="offer"><option>THE RESET</option><option>Small Business Starter Kit</option><option>AI Services</option><option>Other</option></select></div>
+<div class="field"><label for="channel">Contact channel</label><select id="channel"><option>WhatsApp</option><option>Email</option><option>Instagram</option><option>YouTube</option><option>Other</option></select></div>
+<div class="field"><label for="stage">Pipeline stage</label><select id="stage"><option>New lead</option><option>Contacted</option><option>Qualified</option><option>Offer sent</option><option>Follow-up due</option><option>Won</option><option>Lost</option></select></div>
+<div class="field"><label for="value">Potential value (optional)</label><input id="value" type="number" min="0" step="0.01" placeholder="0.00"></div>
+<div class="field"><label for="currency">Currency</label><select id="currency"><option>ZAR</option><option>USD</option><option>Other</option></select></div>
+<div class="field"><label for="followup">Next follow-up date</label><input id="followup" type="date"></div>
+<div class="field"><label for="notes">Notes / next action</label><textarea id="notes" maxlength="1000" placeholder="Problem discussed, agreed next step, or objection"></textarea></div>
+<div class="actions"><button class="btn primary" type="submit" id="saveBtn">Save prospect</button><button class="btn" type="button" id="cancelEdit" hidden>Cancel edit</button></div>
+<p class="note">Data stays in this browser on this device. Export a backup regularly. Do not enter passwords, bank details or sensitive customer information.</p>
+</form></section>
+<section class="panel"><h2>Pipeline</h2>
+<div class="toolbar"><input id="search" type="search" placeholder="Search prospects…"><select id="filter"><option value="">All stages</option><option>New lead</option><option>Contacted</option><option>Qualified</option><option>Offer sent</option><option>Follow-up due</option><option>Won</option><option>Lost</option></select><button class="btn" id="exportBtn" type="button">Export CSV</button></div>
+<div class="tablewrap"><table><thead><tr><th>Prospect</th><th>Stage</th><th>Value</th><th>Follow-up</th><th>Actions</th></tr></thead><tbody id="rows"></tbody></table><div id="empty" class="empty">No prospects yet. Add your first real prospect using the form.</div></div>
+<p class="foot">This first version runs locally. It does not send messages, contact prospects, sync to Notion or process payments.</p></section>
+</div>
+</main>
+<script>
+(()=>{
+const $=id=>document.getElementById(id),key='capitalKingSalesDesk_v1';
+let leads=[];try{leads=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(leads))leads=[]}catch{leads=[]}
+const stages=['New lead','Contacted','Qualified','Offer sent','Follow-up due','Won','Lost'];
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const save=()=>localStorage.setItem(key,JSON.stringify(leads));
+const today=()=>new Date().toISOString().slice(0,10);
+function render(){
+const due=leads.filter(x=>x.followup&&x.followup<=today()&&!['Won','Lost'].includes(x.stage)).length;
+$('mTotal').textContent=leads.length;$('mDue').textContent=due;$('mOffers').textContent=leads.filter(x=>x.stage==='Offer sent').length;$('mWon').textContent=leads.filter(x=>x.stage==='Won').length;
+const q=$('search').value.trim().toLowerCase(),f=$('filter').value;
+const shown=leads.filter(x=>(!f||x.stage===f)&&(!q||[x.name,x.offer,x.notes,x.channel].join(' ').toLowerCase().includes(q))).sort((a,b)=>(a.followup||'9999').localeCompare(b.followup||'9999'));
+$('rows').innerHTML=shown.map(x=>'<tr><td><div class="name">'+esc(x.name)+'</div><div class="detail">'+esc(x.offer)+' · '+esc(x.channel)+'</div>'+(x.notes?'<div class="detail">'+esc(x.notes)+'</div>':'')+'</td><td><span class="status">'+esc(x.stage)+'</span></td><td>'+ (x.value?esc(x.currency+' '+Number(x.value).toFixed(2)):'—')+'</td><td>'+esc(x.followup||'—')+'</td><td><div class="actions"><button class="btn rowbtn" data-edit="'+esc(x.id)+'">Edit</button><button class="btn rowbtn danger" data-delete="'+esc(x.id)+'">Delete</button></div></td></tr>').join('');
+$('empty').hidden=shown.length>0;
+}
+function reset(){ $('leadForm').reset();$('editId').value='';$('formTitle').textContent='Add a prospect';$('saveBtn').textContent='Save prospect';$('cancelEdit').hidden=true}
+$('leadForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editId').value;const item={id:id||String(Date.now())+'_'+Math.random().toString(36).slice(2,8),name:$('name').value.trim(),offer:$('offer').value,channel:$('channel').value,stage:$('stage').value,value:$('value').value,currency:$('currency').value,followup:$('followup').value,notes:$('notes').value.trim()};if(!item.name)return;if(id)leads=leads.map(x=>x.id===id?item:x);else leads.push(item);save();reset();render()});
+$('rows').addEventListener('click',e=>{const edit=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(edit){const x=leads.find(v=>v.id===edit.dataset.edit);if(!x)return;$('editId').value=x.id;for(const k of ['name','offer','channel','stage','value','currency','followup','notes'])$(k).value=x[k]??'';$('formTitle').textContent='Edit prospect';$('saveBtn').textContent='Update prospect';$('cancelEdit').hidden=false;window.scrollTo({top:0,behavior:'smooth'})}if(del){const x=leads.find(v=>v.id===del.dataset.delete);if(x&&confirm('Delete '+x.name+' from this device?')){leads=leads.filter(v=>v.id!==x.id);save();render()}}});
+$('cancelEdit').addEventListener('click',reset);$('search').addEventListener('input',render);$('filter').addEventListener('change',render);
+$('exportBtn').addEventListener('click',()=>{const cols=['name','offer','channel','stage','value','currency','followup','notes'];const csv=[cols.join(','),...leads.map(x=>cols.map(k=>'"'+String(x[k]??'').replace(/"/g,'""')+'"').join(','))].join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='capital-king-sales-pipeline.csv';a.click();URL.revokeObjectURL(url)});
+render();
+})();
+</script>
+</body>
+</html>
