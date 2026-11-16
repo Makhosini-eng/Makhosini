@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d3b32">
+<title>CAPITAL KING | Service Desk</title>
+<style>
+:root{--ink:#172521;--muted:#66756f;--line:#dce5e0;--paper:#f4f7f5;--white:#fff;--green:#0d3b32;--lime:#c8ed77;--red:#a33131;--amber:#9b6714}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:var(--green);color:#fff;padding:22px max(18px,calc((100% - 1180px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.brand{font-weight:850;letter-spacing:.08em}.brand small{display:block;color:#c8d8d2;font-size:11px;font-weight:500;letter-spacing:.14em}
+header p{margin:0;color:#d5e2dd;font-size:13px}
+main{max-width:1180px;margin:24px auto;padding:0 16px 48px}
+.notice{background:#fff8e8;border:1px solid #ead8aa;padding:12px 14px;border-radius:12px;color:#634c1d;font-size:13px;margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat,.panel{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px}
+.stat span{display:block;color:var(--muted);font-size:12px}.stat strong{font-size:25px;display:block;margin-top:4px}
+nav{display:flex;gap:8px;overflow:auto;padding:4px 0 14px}
+nav button{white-space:nowrap;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:9px 15px;cursor:pointer;font-weight:650}
+nav button.active{background:var(--green);color:#fff;border-color:var(--green)}
+.view{display:none}.view.active{display:block}.grid{display:grid;grid-template-columns: minmax(280px, .9fr) minmax(0,1.4fr);gap:14px}
+h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0 0 10px}
+label{display:block;font-size:12px;font-weight:700;color:#53635c;margin:10px 0 5px}
+input,textarea,select{width:100%;border:1px solid #cbd7d0;border-radius:9px;padding:10px 11px;background:#fff;color:var(--ink);font:inherit}
+textarea{min-height:82px;resize:vertical}
+button.primary,.action{border:0;background:var(--green);color:#fff;border-radius:9px;padding:10px 14px;font-weight:700;cursor:pointer}
+button.secondary{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:9px;padding:9px 12px;font-weight:650;cursor:pointer}
+button.danger{border:1px solid #e8caca;background:#fff7f7;color:var(--red);border-radius:9px;padding:8px 10px;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.muted{color:var(--muted);font-size:13px}
+.item{border-top:1px solid var(--line);padding:13px 0;display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.item:first-child{border-top:0}.item p{margin:3px 0;color:var(--muted);font-size:13px}
+.pill{display:inline-block;border-radius:99px;background:#edf3ef;padding:3px 8px;font-size:11px;font-weight:700}
+.empty{padding:24px;text-align:center;color:var(--muted);border:1px dashed #cbd7d0;border-radius:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
+.quote-line{display:grid;grid-template-columns:1fr 130px;gap:8px;margin:8px 0}
+.report{white-space:pre-wrap;background:#f6f8f6;border:1px solid var(--line);border-radius:10px;padding:14px;font-size:13px}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:20px}
+@media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}header{align-items:flex-start}.two{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<header><div class="brand">CAPITAL KING <small>SMALL BUSINESS SERVICE DESK</small></div><p>Enquiries · Quotes · Jobs · Follow-ups</p></header>
+<main>
+<div class="notice"><strong>Prototype data warning:</strong> this version saves records in this browser only. Use fictional test data until a secure hosted database, backups, access controls and privacy process are implemented. No messages are sent automatically.</div>
+<section class="stats">
+<div class="stat"><span>Open enquiries</span><strong id="statEnquiries">0</strong></div>
+<div class="stat"><span>Quotes prepared</span><strong id="statQuotes">0</strong></div>
+<div class="stat"><span>Active jobs</span><strong id="statJobs">0</strong></div>
+<div class="stat"><span>Quoted value</span><strong id="statValue">R0.00</strong></div>
+</section>
+<nav aria-label="Main sections">
+<button class="active" data-tab="dashboard">Overview</button><button data-tab="enquiries">Enquiries</button><button data-tab="quotes">Quotes</button><button data-tab="jobs">Jobs</button><button data-tab="reports">Daily report</button><button data-tab="settings">Data tools</button>
+</nav>
+<section id="dashboard" class="view active">
+<div class="grid">
+<div class="panel"><h2>Today at a glance</h2><div id="todaySummary" class="muted">Your activity will appear here.</div><div class="actions"><button class="primary" data-go="enquiries">Add enquiry</button><button class="secondary" data-go="reports">Open daily report</button></div></div>
+<div class="panel"><h2>Recent activity</h2><div id="recentList"></div></div>
+</div>
+</section>
+<section id="enquiries" class="view">
+<div class="grid">
+<div class="panel"><h2>Capture an enquiry</h2>
+<form id="enquiryForm">
+<label for="customer">Customer / contact name</label><input id="customer" required maxlength="90" placeholder="e.g. Thandi Mokoena">
+<div class="two"><div><label for="phone">Phone / WhatsApp</label><input id="phone" maxlength="35" placeholder="Optional"></div><div><label for="service">Service type</label><select id="service"><option>Cleaning</option><option>Lawn care</option><option>Construction</option><option>Maintenance & repairs</option><option>Other</option></select></div></div>
+<label for="details">What does the customer need?</label><textarea id="details" required maxlength="1000" placeholder="Describe the work, site and requirements"></textarea>
+<label for="enqDate">Enquiry date</label><input id="enqDate" type="date" required>
+<button class="primary" type="submit" style="margin-top:14px">Save enquiry</button>
+</form></div>
+<div class="panel"><h2>Enquiry pipeline</h2><div id="enquiryList"></div></div>
+</div>
+</section>
+<section id="quotes" class="view">
+<div class="grid">
+<div class="panel"><h2>Prepare a quotation</h2>
+<form id="quoteForm">
+<label for="quoteCustomer">Customer / enquiry</label><select id="quoteCustomer" required></select>
+<label for="quoteTitle">Quote title / scope</label><input id="quoteTitle" required maxlength="120" placeholder="e.g. Monthly garden maintenance">
+<div id="quoteLines"><div class="quote-line"><input class="line-desc" aria-label="Line description" placeholder="Work item" required><input class="line-amount" aria-label="Line amount in rand" type="number" min="0" step=".01" placeholder="Amount" required></div></div>
+<button class="secondary" type="button" id="addLine">+ Add line item</button>
+<div class="two"><div><label for="quoteExpiry">Valid until</label><input id="quoteExpiry" type="date"></div><div><label for="quoteNotes">Notes / exclusions</label><input id="quoteNotes" maxlength="180" placeholder="e.g. Materials excluded"></div></div>
+<button class="primary" type="submit" style="margin-top:14px">Generate quote</button>
+</form></div>
+<div class="panel"><h2>Saved quotations</h2><div id="quoteList"></div></div>
+</div>
+</section>
+<section id="jobs" class="view">
+<div class="grid">
+<div class="panel"><h2>Convert quote to job</h2><form id="jobForm"><label for="jobQuote">Accepted quotation</label><select id="jobQuote" required></select><label for="jobDue">Target completion date</label><input id="jobDue" type="date"><label for="jobNotes">Job notes</label><textarea id="jobNotes" maxlength="500" placeholder="Scheduling, materials or team notes"></textarea><button class="primary" type="submit" style="margin-top:14px">Create job</button></form><p class="muted">Only create a job after the customer has accepted the quotation.</p></div>
+<div class="panel"><h2>Job tracker</h2><div id="jobList"></div></div>
+</div>
+</section>
+<section id="reports" class="view">
+<div class="panel"><h2>Daily operations report</h2><p class="muted">A snapshot of the records stored in this browser.</p><div class="actions"><button class="primary" id="makeReport">Generate report</button><button class="secondary" id="copyReport">Copy report</button></div><div id="reportOutput" class="report" style="margin-top:14px">Select “Generate report” to prepare today's summary.</div></div>
+</section>
+<section id="settings" class="view">
+<div class="grid">
+<div class="panel"><h2>Export your records</h2><p class="muted">Download a JSON backup or CSV summaries. Keep exports private and secure.</p><div class="actions"><button class="primary" id="exportJson">Download JSON backup</button><button class="secondary" id="exportCsv">Download jobs CSV</button></div></div>
+<div class="panel"><h2>Demo data</h2><p class="muted">Load fictional records to test the workflow, or clear all locally stored records.</p><div class="actions"><button class="secondary" id="loadDemo">Load sample data</button><button class="danger" id="clearData">Clear all data</button></div><p class="muted" id="storageStatus" style="margin-top:14px"></p></div>
+</div>
+</section>
+<footer>CAPITAL KING Service Desk MVP · Local prototype · No external integrations</footer>
+</main>
+<script>
+(() => {
+const KEY='capitalKingServiceDeskV1';
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-ZA',{style:'currency',currency:'ZAR'}).format(Number(n)||0);
+const today=()=>new Date().toISOString().slice(0,10);
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let db=load();
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));return x&&Array.isArray(x.enquiries)&&Array.isArray(x.quotes)&&Array.isArray(x.jobs)?x:{enquiries:[],quotes:[],jobs:[]}}catch{return{enquiries:[],quotes:[],jobs:[]}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function customerFor(id){return db.enquiries.find(x=>x.id===id)}
+function quoteFor(id){return db.quotes.find(x=>x.id===id)}
+function tab(name){document.querySelectorAll('.view').forEach(x=>x.classList.toggle('active',x.id===name));document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===name))}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.go)));
+function render(){
+$('statEnquiries').textContent=db.enquiries.filter(x=>x.status!=='Closed').length;
+$('statQuotes').textContent=db.quotes.length;
+$('statJobs').textContent=db.jobs.filter(x=>x.status!=='Completed').length;
+$('statValue').textContent=money(db.quotes.reduce((s,q)=>s+q.total,0));
+$('todaySummary').innerHTML='<p><strong>'+db.enquiries.filter(x=>x.date===today()).length+'</strong> new enquiries today.</p><p><strong>'+db.quotes.filter(x=>x.date===today()).length+'</strong> quotations prepared today.</p><p><strong>'+db.jobs.filter(x=>x.status==='In progress').length+'</strong> jobs currently in progress.</p>';
+const recent=[...db.enquiries.map(x=>({date:x.date,label:'Enquiry: '+x.customer,sub:x.service})),...db.quotes.map(x=>({date:x.date,label:'Quote: '+x.title,sub:money(x.total)})),...db.jobs.map(x=>({date:x.date,label:'Job: '+x.customer,sub:x.status}))].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,6);
+$('recentList').innerHTML=recent.length?recent.map(x=>'<div class="item"><div><strong>'+esc(x.label)+'</strong><p>'+esc(x.sub)+'</p></div><span class="pill">'+esc(x.date)+'</span></div>').join(''):'<div class="empty">No activity yet. Add your first enquiry.</div>';
+$('enquiryList').innerHTML=db.enquiries.length?db.enquiries.slice().reverse().map(x=>'<div class="item"><div><strong>'+esc(x.customer)+'</strong><p>'+esc(x.service)+' · '+esc(x.date)+' · '+esc(x.details)+'</p><span class="pill">'+esc(x.status)+'</span></div><div class="actions"><button class="secondary" data-follow="'+x.id+'">Draft follow-up</button><button class="secondary" data-enqclose="'+x.id+'">'+(x.status==='Closed'?'Reopen':'Close')+'</button></div></div>').join(''):'<div class="empty">No enquiries saved.</div>';
+$('quoteCustomer').innerHTML=db.enquiries.map(x=>'<option value="'+x.id+'">'+esc(x.customer)+' — '+esc(x.service)+'</option>').join('');
+$('jobQuote').innerHTML=db.quotes.filter(q=>!db.jobs.some(j=>j.quoteId===q.id)).map(q=>'<option value="'+q.id+'">'+esc(q.customer)+' — '+esc(q.title)+' ('+money(q.total)+')</option>').join('');
+$('quoteList').innerHTML=db.quotes.length?db.quotes.slice().reverse().map(q=>'<div class="item"><div><strong>'+esc(q.title)+'</strong><p>'+esc(q.customer)+' · '+esc(q.date)+' · '+money(q.total)+'</p><p>'+esc(q.lines.map(l=>l.description+' '+money(l.amount)).join(' | '))+'</p><span class="pill">Prepared · not sent</span></div><button class="secondary" data-quote="'+q.id+'">View</button></div>').join(''):'<div class="empty">No quotations yet.</div>';
+$('jobList').innerHTML=db.jobs.length?db.jobs.slice().reverse().map(j=>'<div class="item"><div><strong>'+esc(j.customer)+'</strong><p>'+esc(j.title)+' · Due '+esc(j.due||'Not set')+' · '+money(j.total)+'</p><span class="pill">'+esc(j.status)+'</span></div><select aria-label="Update job status" data-jobstatus="'+j.id+'"><option '+(j.status==='Scheduled'?'selected':'')+'>Scheduled</option><option '+(j.status==='In progress'?'selected':'')+'>In progress</option><option '+(j.status==='Completed'?'selected':'')+'>Completed</option><option '+(j.status==='On hold'?'selected':'')+'>On hold</option></select></div>').join(''):'<div class="empty">No jobs yet. Convert an accepted quote into a job.</div>';
+$('storageStatus').textContent='Stored records: '+(db.enquiries.length+db.quotes.length+db.jobs.length)+' · Browser storage only.';
+document.querySelectorAll('[data-follow]').forEach(b=>b.onclick=()=>followup(b.dataset.follow));
+document.querySelectorAll('[data-enqclose]').forEach(b=>b.onclick=()=>{const x=customerFor(b.dataset.enqclose);x.status=x.status==='Closed'?'Open':'Closed';save()});
+document.querySelectorAll('[data-jobstatus]').forEach(s=>s.onchange=()=>{const j=db.jobs.find(x=>x.id===s.dataset.jobstatus);j.status=s.value;save()});
+document.querySelectorAll('[data-quote]').forEach(b=>b.onclick=()=>{const q=quoteFor(b.dataset.quote);alert('QUOTE PREVIEW\n'+q.customer+'\n'+q.title+'\n\n'+q.lines.map(l=>l.description+': '+money(l.amount)).join('\n')+'\n\nTOTAL: '+money(q.total)+'\nValid until: '+(q.expiry||'Not specified')+'\nNotes: '+(q.notes||'None')+'\n\nPrepared only — not sent.')});
+}
+function followup(id){const x=customerFor(id);const msg='Hello '+x.customer+', thank you for enquiring about '+x.service+'. We are following up on your request: '+x.details+'. Please let us know if you would like us to clarify anything or arrange the next step. Regards, '+ 'Your service team';const w=window.open('','_blank');if(w){w.document.write('<title>Follow-up draft</title><pre style="white-space:pre-wrap;font:16px system-ui;padding:20px">'+esc(msg)+'</pre>')}else alert(msg)}
+$('enqDate').value=today();
+$('enquiryForm').addEventListener('submit',e=>{e.preventDefault();db.enquiries.push({id:uid(),customer:$('customer').value.trim(),phone:$('phone').value.trim(),service:$('service').value,details:$('details').value.trim(),date:$('enqDate').value,status:'Open'});e.target.reset();$('enqDate').value=today();save();});
+$('addLine').onclick=()=>{const d=document.createElement('div');d.className='quote-line';d.innerHTML='<input class="line-desc" aria-label="Line description" placeholder="Work item" required><input class="line-amount" aria-label="Line amount in rand" type="number" min="0" step=".01" placeholder="Amount" required>'; $('quoteLines').appendChild(d)};
+$('quoteForm').addEventListener('submit',e=>{e.preventDefault();const enquiry=customerFor($('quoteCustomer').value);if(!enquiry){alert('Add an enquiry first.');return}const lines=[...document.querySelectorAll('#quoteLines .quote-line')].map(r=>({description:r.querySelector('.line-desc').value.trim(),amount:Number(r.querySelector('.line-amount').value)}));if(!lines.length||lines.some(x=>!x.description||!Number.isFinite(x.amount)||x.amount<0)){alert('Check each quotation line and amount.');return}db.quotes.push({id:uid(),enquiryId:enquiry.id,customer:enquiry.customer,title:$('quoteTitle').value.trim(),lines,total:lines.reduce((s,x)=>s+x.amount,0),date:today(),expiry:$('quoteExpiry').value,notes:$('quoteNotes').value.trim()});e.target.reset();$('quoteLines').innerHTML='<div class="quote-line"><input class="line-desc" aria-label="Line description" placeholder="Work item" required><input class="line-amount" aria-label="Line amount in rand" type="number" min="0" step=".01" placeholder="Amount" required></div>';save();});
+$('jobForm').addEventListener('submit',e=>{e.preventDefault();const q=quoteFor($('jobQuote').value);if(!q){alert('Prepare a quotation first.');return}db.jobs.push({id:uid(),quoteId:q.id,customer:q.customer,title:q.title,total:q.total,date:today(),due:$('jobDue').value,notes:$('jobNotes').value.trim(),status:'Scheduled'});e.target.reset();save()});
+function report(){const open=db.enquiries.filter(x=>x.status==='Open').length,active=db.jobs.filter(x=>x.status!=='Completed').length,done=db.jobs.filter(x=>x.status==='Completed').length;return 'CAPITAL KING — DAILY OPERATIONS REPORT\nDate: '+today()+'\n\nENQUIRIES\nNew today: '+db.enquiries.filter(x=>x.date===today()).length+'\nOpen: '+open+'\nTotal: '+db.enquiries.length+'\n\nQUOTATIONS\nPrepared today: '+db.quotes.filter(x=>x.date===today()).length+'\nTotal quoted value: '+money(db.quotes.reduce((s,q)=>s+q.total,0))+'\n\nJOBS\nActive: '+active+'\nCompleted: '+done+'\n\nFOLLOW-UP PRIORITIES\n'+db.enquiries.filter(x=>x.status==='Open').map(x=>'- Contact '+x.customer+' about '+x.service).join('\n')+'\n\nNote: report is based only on this browser’s locally stored records.'}
+$('makeReport').onclick=()=>{$('reportOutput').textContent=report()};
+$('copyReport').onclick=async()=>{try{await navigator.clipboard.writeText($('reportOutput').textContent);alert('Report copied.')}catch{alert('Clipboard access unavailable. Select and copy the report text manually.')}};
+function download(name,data,type){const a=document.createElement('a'),url=URL.createObjectURL(new Blob([data],{type}));a.href=url;a.download=name;a.click();URL.revokeObjectURL(url)}
+$('exportJson').onclick=()=>download('capital-king-backup-'+today()+'.json',JSON.stringify(db,null,2),'application/json');
+$('exportCsv').onclick=()=>{const rows=[['Customer','Job','Amount ZAR','Due date','Status'],...db.jobs.map(j=>[j.customer,j.title,j.total,j.due,j.status])];const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\n');download('capital-king-jobs-'+today()+'.csv',csv,'text/csv')};
+$('loadDemo').onclick=()=>{if(!confirm('Add fictional sample records to this browser?'))return;const a={id:uid(),customer:'Thandi Mokoena (SAMPLE)',phone:'000 000 0000',service:'Lawn care',details:'Fictional sample: mow and edge a small residential lawn.',date:today(),status:'Open'};const b={id:uid(),customer:'Musa Dlamini (SAMPLE)',phone:'000 000 0000',service:'Cleaning',details:'Fictional sample: once-off office cleaning.',date:today(),status:'Open'};db.enquiries.push(a,b);db.quotes.push({id:uid(),enquiryId:a.id,customer:a.customer,title:'Garden maintenance (SAMPLE)',lines:[{description:'Mowing and edging',amount:450},{description:'Green waste removal',amount:100}],total:550,date:today(),expiry:'',notes:'Fictional sample only'});save()};
+$('clearData').onclick=()=>{if(confirm('Permanently clear all CAPITAL KING records stored in this browser? Export a backup first if needed.')){db={enquiries:[],quotes:[],jobs:[]};localStorage.removeItem(KEY);render()}};
+render();
+})();
+</script>
+</body></html>
