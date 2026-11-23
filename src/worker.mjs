@@ -36,7 +36,8 @@ export default {
       return json({ accepted: true, duplicate: !inserted.meta?.changes, executionQueued: Boolean(inserted.meta?.changes && task.status === 'pending' && env.EXECUTION_MODE === 'enabled'), task: row }, inserted.meta?.changes ? 202 : 200);
     }
 
-    const approvalMatch = url.pathname.match(/^\\/approvals\\/([0-9a-f-]{36})$/i);
+    const approvalPathId = url.pathname.startsWith('/approvals/') ? url.pathname.slice('/approvals/'.length) : '';
+    const approvalMatch = /^[0-9a-f-]{36}$/i.test(approvalPathId) ? approvalPathId : null;
     if (request.method === 'POST' && approvalMatch) {
       if (!env.ADMIN_TOKEN) return json({ error: 'approval_management_not_configured' }, 503);
       if (!bearerMatches(request, env.ADMIN_TOKEN)) return json({ error: 'unauthorized' }, 401);
