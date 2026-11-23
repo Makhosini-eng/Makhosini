@@ -6,6 +6,9 @@ on:
     branches:
       - master
       - "capital-king/**"
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,10 +18,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Tests, syntax and browser policy checks
+  node-tests:
+    name: Node unit, syntax and Playwright checks
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -39,5 +42,47 @@ jobs:
       - name: Run browser approval-gate tests
         run: npm run test:browser
 
-# This workflow intentionally has no deployment, publishing, messaging,
-# secret access, or write-capable token permissions.
+  python-poc:
+    name: Python analytics and document-adapter tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Verify Python runtime
+        run: |
+          python3 --version
+          python3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)"
+      - name: Install isolated analytics dependency
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --disable-pip-version-check -r requirements-analytics.txt
+      - name: Run synthetic analytics and document adapter tests
+        run: |
+          . .venv/bin/activate
+          python -m unittest discover -s tools -p 'test_*.py'
+          python -m compileall -q tools
+
+  security-scan:
+    name: Trivy filesystem security baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Install pinned Trivy scanner
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: v0.76.1
+      - name: Scan dependencies, configuration, secrets and licences
+        run: |
+          trivy fs --scanners vuln,misconfig,secret,license --severity HIGH,CRITICAL --ignore-unfixed --exit-code 0 --format table .
+
+# The security scan is initially report-only. Review its first baseline and
+# triage findings before changing it into a blocking gate.
+# This workflow has no deployment, publishing, messaging, or secret access.
