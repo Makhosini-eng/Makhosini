@@ -16,7 +16,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
     if (request.method === 'GET' && url.pathname === '/health') {
-      return json({ ok: true, service: 'capital-king-task-engine', mode: 'safe', executionEnabled: env.EXECUTION_MODE === 'enabled', integrationsConfigured: false });
+      return json({ ok: true, service: 'capital-king-task-engine', mode: 'safe', executionEnabled: env.EXECUTION_MODE === 'enabled', cloudflareBindingsConfigured: Boolean(env.DB && env.TASK_QUEUE) });
     }
 
     if (request.method === 'POST' && url.pathname === '/events/task') {
