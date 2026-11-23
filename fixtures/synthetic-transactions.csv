@@ -1,0 +1,6 @@
+transaction_date,transaction_id,product,amount,currency,status
+2026-10-02,txn-synth-001,Website setup,120.00,USD,paid
+2026-10-08,txn-synth-002,Lead workflow,80.00,USD,paid
+2026-10-12,txn-synth-003,Lead workflow,25.00,USD,refunded
+2026-11-01,txn-synth-004,Document template,60.00,USD,paid
+2026-11-05,txn-synth-005,Website setup,40.00,USD,pending
