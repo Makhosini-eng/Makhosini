@@ -37,3 +37,12 @@ test('unknown action and invalid retry values are rejected', () => {
   assert.equal(validateTask({ ...base, action: 'run_shell_command' }).ok, false);
   assert.equal(validateTask({ ...base, maxRetries: 999 }).ok, false);
 });
+test('deduplication key is unambiguous when fields contain delimiters', () => {
+  const a = { source: 'x|y', eventId: 'z', taskType: 't' };
+  const b = { source: 'x', eventId: 'y|z', taskType: 't' };
+  assert.notEqual(stableTaskKey(a), stableTaskKey(b));
+});
+test('approvalRequired must be boolean and customer draft outreach is allowed', () => {
+  assert.equal(validateTask({ ...base, approvalRequired: 'false' }).ok, false);
+  assert.equal(validateTask({ ...base, action: 'draft_outreach' }).ok, true);
+});
