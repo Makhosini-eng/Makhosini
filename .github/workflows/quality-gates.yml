@@ -67,7 +67,7 @@ jobs:
           python -m compileall -q tools
 
   security-scan:
-    name: Trivy filesystem security baseline
+    name: Trivy security and licence checks
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
@@ -81,10 +81,17 @@ jobs:
           version: v0.76.2
       - name: Install Node dependencies without running package scripts
         run: npm install --ignore-scripts --no-audit --no-fund
-      - name: Scan dependencies, configuration, secrets and licences
+      - name: Block on high and critical vulnerabilities or misconfigurations
         run: |
-          trivy fs --scanners vuln,misconfig,secret,license --include-dev-deps --severity HIGH,CRITICAL --ignore-unfixed --exit-code 0 --format table .
+          trivy fs --scanners vuln,misconfig --include-dev-deps --severity HIGH,CRITICAL --exit-code 1 --format table .
+      - name: Block on detected repository secrets
+        run: |
+          trivy fs --scanners secret --exit-code 1 --format table .
+      - name: Report dependency licence findings
+        run: |
+          trivy fs --scanners license --include-dev-deps --exit-code 0 --format table .
 
-# The security scan is initially report-only. Review its first baseline and
-# triage findings before changing it into a blocking gate.
+# Security findings at HIGH/CRITICAL severity and detected secrets now fail
+# this workflow. Licence inventory remains report-only pending complete
+# Python installed-package metadata and model-specific licence coverage.
 # This workflow has no deployment, publishing, messaging, or secret access.
