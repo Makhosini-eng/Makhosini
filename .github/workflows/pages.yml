@@ -1,5 +1,4 @@
 name: Deploy CAPITAL KING Service Desk to GitHub Pages
-# Fallback deployment path: GitHub Pages does not require Cloudflare API secrets.
 
 on:
   push:
@@ -7,7 +6,6 @@ on:
       - capital-king-small-business-mvp
     paths:
       - "app/**"
-      - ".github/workflows/pages.yml"
   workflow_dispatch:
 
 permissions:
@@ -31,8 +29,6 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload static app
         uses: actions/upload-pages-artifact@v3
