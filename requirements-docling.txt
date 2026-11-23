@@ -1,0 +1,4 @@
+# Optional document-intelligence tooling; not part of the Node.js runtime.
+# Docling codebase is MIT; individual model licences must be reviewed separately.
+# First use of some PDF features may download model assets.
+docling==2.152.0
