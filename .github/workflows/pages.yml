@@ -1,4 +1,5 @@
 name: Deploy CAPITAL KING Service Desk to GitHub Pages
+# Fallback deployment path: GitHub Pages does not require Cloudflare API secrets.
 
 on:
   push:
