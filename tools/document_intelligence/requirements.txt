@@ -1,0 +1,2 @@
+# Trivy-recognised dependency manifest for the optional document tool.
+docling==2.152.0

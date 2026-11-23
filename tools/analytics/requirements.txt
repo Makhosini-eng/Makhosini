@@ -1,0 +1,2 @@
+# Trivy-recognised dependency manifest for the optional analytics tool.
+pandas==3.1.0

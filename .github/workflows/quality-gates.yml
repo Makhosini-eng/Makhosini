@@ -6,6 +6,9 @@ on:
     branches:
       - master
       - "capital-king/**"
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,23 +18,80 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Tests and syntax
+  node-tests:
+    name: Node unit, syntax and Playwright checks
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
       - name: Check out source
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Verify Node.js runtime
         run: |
           node --version
           node -e "if (Number(process.versions.node.split('.')[0]) < 20) process.exit(1)"
-      - name: Run tests
+      - name: Install pinned development dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Run unit and policy tests
         run: npm test
       - name: Check JavaScript syntax
         run: npm run check
+      - name: Run browser approval-gate tests
+        run: npm run test:browser
 
-# This workflow intentionally has no deployment, publishing, messaging,
-# secret access, or write-capable token permissions.
+  python-poc:
+    name: Python analytics and document-adapter tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Verify Python runtime
+        run: |
+          python3 --version
+          python3 -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 11) else 1)"
+      - name: Install isolated analytics dependency
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --disable-pip-version-check -r requirements-analytics.txt
+      - name: Run synthetic analytics and document adapter tests
+        run: |
+          . .venv/bin/activate
+          python -m unittest discover -s tools -p 'test_*.py'
+          python -m compileall -q tools
+
+  security-scan:
+    name: Trivy security and licence checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Install pinned Trivy scanner
+        uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
+        with:
+          version: v0.76.2
+      - name: Install Node dependencies without running package scripts
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Block on high and critical vulnerabilities or misconfigurations
+        run: |
+          trivy fs --scanners vuln,misconfig --include-dev-deps --severity HIGH,CRITICAL --exit-code 1 --format table .
+      - name: Block on detected repository secrets
+        run: |
+          trivy fs --scanners secret --exit-code 1 --format table .
+      - name: Report dependency licence findings
+        run: |
+          trivy fs --scanners license --include-dev-deps --exit-code 0 --format table .
+
+# Security findings at HIGH/CRITICAL severity and detected secrets now fail
+# this workflow. Licence inventory remains report-only pending complete
+# Python installed-package metadata and model-specific licence coverage.
+# This workflow has no deployment, publishing, messaging, or secret access.

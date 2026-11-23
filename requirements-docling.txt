@@ -1,0 +1,2 @@
+# Optional document-intelligence tooling; not part of the Node.js runtime.
+-r tools/document_intelligence/requirements.txt

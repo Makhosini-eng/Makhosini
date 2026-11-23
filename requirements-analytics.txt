@@ -1,0 +1,2 @@
+# Optional isolated analytics tooling; not part of the Node.js runtime.
+-r tools/analytics/requirements.txt
