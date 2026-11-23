@@ -25,12 +25,11 @@ For every candidate:
 | Area | Repository | Licence stated by project | What it can accelerate | Current decision |
 |---|---|---|---|---|
 | Workflow automation | [activepieces/activepieces](https://github.com/activepieces/activepieces) | MIT outside Enterprise directories; Enterprise paths commercial | Event-driven workflows, integrations, AI workflows, lead and operations processes | **Evaluated; design prepared; runtime deferred** pending private task API and suitable Docker host |
-| Deterministic browser automation | [microsoft/playwright](https://github.com/microsoft/playwright) | Apache-2.0 | Browser tests, repeatable web workflows, form and UI verification | **Integrated in POC**; Quality Gates run #77 passed (2 browser tests) |
+| Deterministic browser automation | [microsoft/playwright](https://github.com/microsoft/playwright) | Apache-2.0 | Browser tests, repeatable web workflows, form and UI verification | **Integrated in POC**; Quality Gates run #102 passed 2 browser tests |
 | AI browser agent | [browser-use/browser-use](https://github.com/browser-use/browser-use) | MIT library; hosted services are separate | Assisted research and browser tasks using a model | **Sandbox only**; model and browser runtime may cost money |
 | Document intelligence | [docling-project/docling](https://github.com/docling-project/docling) | MIT codebase; individual models have separate licences | PDF, Office and document parsing for research, proposals and knowledge extraction | **Optional adapter integrated**; adapter tests passed in CI, full model test deferred |
 | Data analysis | [pandas-dev/pandas](https://github.com/pandas-dev/pandas) | BSD-3-Clause | CSV / spreadsheet analysis, reporting, reconciliation and time-series work | **Optional analytics POC integrated**; 7 synthetic tests passed in CI with pandas 3.1.0 |
-| AI model framework | [huggingface/transformers](https://github.com/huggingface/transformers) | Apache-2.0 code; model licences vary | Text, vision, audio and multimodal model integration | **Evaluate per model**; never assume weights share the code licence |
-| Security scanning | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | Apache-2.0 | Dependency, filesystem, container, IaC, secret and licence scanning | **CI scan passed**; 0 HIGH/CRITICAL findings in scanned manifests; IaC config absent and Python licence metadata scan incomplete |
+| Security scanning | [aquasecurity/trivy](https://github.com/aquasecurity/trivy) | Apache-2.0 | Dependency, filesystem, container, IaC, secret and licence scanning | **Blocking CI gate passed** for HIGH/CRITICAL vulnerability/misconfiguration and repository secret scans; Python licence and IaC coverage remain incomplete |
 | Business ERP | [frappe/erpnext](https://github.com/frappe/erpnext) | GPL-3.0 | Accounting, CRM, inventory, projects, procurement and operations | **Evaluate as a standalone product**; copyleft obligations require legal review before integration or distribution |
 | Application framework | [frappe/frappe](https://github.com/frappe/frappe) | MIT | Full-stack business application framework, APIs and data models | **Evaluate only if** building a Frappe-based application |
 | Workflow automation (restricted licence) | [n8n-io/n8n](https://github.com/n8n-io/n8n) | Sustainable Use License / Enterprise License (fair-code; not OSI open source) | Workflow orchestration and integrations | **Conditional**; review use restrictions and enterprise-only code before any commercial deployment |
@@ -70,8 +69,8 @@ A candidate being evaluated is not production approval.
 
 ## Next evaluation queue
 
-1. Verify the Playwright and Trivy GitHub Actions results and triage all findings.
-2. Generate and review transitive dependency lockfiles before adopting dependencies beyond this POC.
+1. Generate and review committed transitive dependency lockfiles before production adoption.
+2. Implement queue outbox/reconciliation and independently authenticated approval identity.
 3. Build the private authenticated task adapter before attempting an Activepieces connection.
 4. Run a real Docling conversion only on a non-sensitive sample after reviewing model download and licence implications.
 5. Extend pandas reporting only after defining a reconciled source-of-truth transaction schema.
