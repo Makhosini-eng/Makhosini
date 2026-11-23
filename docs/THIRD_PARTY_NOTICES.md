@@ -17,7 +17,7 @@ This file records direct optional/test dependencies. It does not replace the lic
 - Pinned optional package: `docling==2.152.0`
 - Codebase licence: MIT
 - Purpose: optional local document conversion to Markdown.
-- Individual model packages and model weights can have separate licences. Review each model and dependency before using or distributing model assets. See `requirements-docling.txt`.
+- Individual model packages and model weights can have separate licences. Review each model and dependency before using or distributing model assets. See `requirements-docling.txt` and the scanner-visible manifest at `tools/document_intelligence/requirements.txt`.
 
 ## pandas
 
@@ -25,7 +25,7 @@ This file records direct optional/test dependencies. It does not replace the lic
 - Pinned optional package: `pandas==3.1.0`
 - Licence: BSD-3-Clause
 - Purpose: optional synthetic transaction and revenue reporting.
-- pandas and its transitive dependencies retain their own notices. See `requirements-analytics.txt`.
+- pandas and its transitive dependencies retain their own notices. See `requirements-analytics.txt` and the scanner-visible manifest at `tools/analytics/requirements.txt`.
 
 ## Aqua Security Trivy
 
