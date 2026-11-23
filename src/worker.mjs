@@ -7,7 +7,7 @@ const bearerMatches = (request, token) => Boolean(token) && request.headers.get(
 async function readJsonBounded(request) {
   const contentLength = request.headers.get('content-length');
   if (contentLength !== null) {
-    if (!/^\\d+$/.test(contentLength)) return { error: 'invalid_content_length' };
+    if (!/^\d+$/.test(contentLength)) return { error: 'invalid_content_length' };
     if (Number(contentLength) > MAX_BODY_BYTES) return { error: 'payload_too_large' };
   }
 
