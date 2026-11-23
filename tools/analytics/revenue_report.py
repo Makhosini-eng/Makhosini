@@ -32,6 +32,12 @@ def build_monthly_report(source: str | Path) -> tuple[pd.DataFrame, dict[str, ob
         raise ValueError("Transaction file contains no rows")
     if frame.isna().any().any():
         raise ValueError("Transaction data contains blank required values")
+    for column in ("transaction_id", "product", "currency", "status"):
+        frame[column] = frame[column].astype("string").str.strip()
+        if (frame[column] == "").any():
+            raise ValueError(f"{column} cannot be blank")
+    frame["currency"] = frame["currency"].str.upper()
+    frame["status"] = frame["status"].str.lower()
     if frame["transaction_id"].duplicated().any():
         raise ValueError("Duplicate transaction_id values are not allowed")
 
