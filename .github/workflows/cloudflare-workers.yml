@@ -1,0 +1,33 @@
+name: Deploy CAPITAL KING Service Desk to Cloudflare Workers
+
+on:
+  push:
+    branches:
+      - capital-king-small-business-mvp
+    paths:
+      - "app/**"
+      - "wrangler.jsonc"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-worker-production
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy static Service Desk Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy
