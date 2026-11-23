@@ -33,3 +33,17 @@ Provider webhook verification, replay protection, atomic approvals, queue outbox
 - Rotate ingress/admin tokens if exposed.
 - Preserve audit records for incident review.
 - Do not delete D1 as a first response; preserve evidence before destructive recovery.
+
+## Least-privilege token design (verify in Cloudflare before creating)
+- Scope the token to the single intended Cloudflare account.
+- For initial inventory, prefer read-only access to Workers, D1 and Queues.
+- Creating the first Worker may require Workers Admin at the Workers product scope; after resource creation, narrow routine deployment to Workers Editor for the specific Worker where supported.
+- D1 and Queues resource provisioning require their respective write permissions (D1 Write and Queues Write).
+- Do not grant DNS, billing, user-management, account-settings write, or unrelated product permissions for this design.
+- Keep the token in Cloudflare/GitHub secret storage. Never paste it into chat. Cloudflare only displays a newly created token once; store it securely at creation.
+
+Official permission references:
+- https://developers.cloudflare.com/workers/authorization/
+- https://developers.cloudflare.com/workers/authorization/workers/
+- https://developers.cloudflare.com/fundamentals/api/reference/permissions/
+- https://developers.cloudflare.com/fundamentals/api/get-started/create-token/
