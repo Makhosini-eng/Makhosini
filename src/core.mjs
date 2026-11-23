@@ -3,12 +3,12 @@ import { randomUUID, createHash } from 'node:crypto';
 export const DEPARTMENTS = Object.freeze(['product', 'customer', 'operations']);
 export const STATUSES = Object.freeze(['pending', 'running', 'awaiting_approval', 'blocked', 'completed', 'failed', 'cancelled', 'dead_letter']);
 export const APPROVAL_ACTIONS = Object.freeze(['spend_money', 'publish_content', 'contact_external_party', 'change_account_settings', 'grant_permissions', 'deploy_live_system', 'handle_payment', 'delete_or_overwrite_live_data']);
-export const SAFE_ACTIONS = Object.freeze(['internal_work', 'research', 'draft', 'create_local_artifact', 'run_quality_checks', 'market_research', 'competitor_research', 'qualify_prospects', 'reconcile_supplied_records', 'audit_workflows', 'prepare_reports', 'escalate_failures']);
+export const SAFE_ACTIONS = Object.freeze(['internal_work', 'research', 'draft', 'create_local_artifact', 'run_quality_checks', 'market_research', 'competitor_research', 'qualify_prospects', 'draft_outreach', 'reconcile_supplied_records', 'audit_workflows', 'prepare_reports', 'escalate_failures']);
 
 const safeString = (v, max = 500) => typeof v === 'string' && v.trim().length > 0 && v.length <= max;
 
 export function stableTaskKey({ source, eventId, taskType, subject }) {
-  const basis = [source, eventId, taskType, subject ?? ''].join('|');
+  const basis = JSON.stringify([source, eventId, taskType, subject ?? '']);
   return createHash('sha256').update(basis).digest('hex');
 }
 
@@ -22,6 +22,7 @@ export function validateTask(input) {
   if (!safeString(input.taskType, 100)) errors.push('taskType must be a non-empty string up to 100 characters');
   if (input.priority !== undefined && !['low', 'normal', 'high', 'critical'].includes(input.priority)) errors.push('priority must be low, normal, high or critical');
   if (input.action !== undefined && !SAFE_ACTIONS.includes(input.action) && !APPROVAL_ACTIONS.includes(input.action)) errors.push('action is not in the approved action catalogue');
+  if (input.approvalRequired !== undefined && typeof input.approvalRequired !== 'boolean') errors.push('approvalRequired must be a boolean');
   if (input.maxRetries !== undefined && (!Number.isInteger(input.maxRetries) || input.maxRetries < 0 || input.maxRetries > 3)) errors.push('maxRetries must be an integer from 0 to 3');
   if (input.payload !== undefined && (input.payload === null || typeof input.payload !== 'object' || Array.isArray(input.payload))) errors.push('payload must be a JSON object');
   return { ok: errors.length === 0, errors };
