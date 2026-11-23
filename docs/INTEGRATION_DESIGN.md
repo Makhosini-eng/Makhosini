@@ -9,16 +9,19 @@ The existing Notion ChatGPT connection is available for workspace work, but is n
 
 ## GitHub
 Role: code review, version history and CI.
-- Repository: `Makhosini-eng/Makhosini` (public; only `.gitkeep` existed on `master` at inspection time).
+- Repository: `Makhosini-eng/Makhosini` (public; `master` remains untouched by this POC).
 - Use a feature branch and draft pull request.
 - Never commit secrets, customer records or account exports.
-- CI runs `npm test` and `npm run check`; it has no deployment job or secrets access.
+- CI uses read-only contents permissions and has no deployment job or secret access.
+- Quality Gates includes Node/browser/Python tests, blocking HIGH/CRITICAL vulnerability/misconfiguration scans and a blocking repository secret scan. Licence inventory is report-only while Python/model metadata coverage is incomplete.
 
 ## Cloudflare
 Role: Worker ingress, D1 state ledger and Queues.
 - No Cloudflare connector or verified account authorization is available.
 - No Cloudflare resources have been created.
 - Wrangler file is a template with placeholder database ID and safe execution defaults.
+- Approval claim, conditional task transition and audit insertion are implemented using a D1 batch transaction, but this has only been tested with a synthetic database mock; no live D1 transaction has been run.
+- Queue dispatch is not transactional with D1; an outbox/reconciliation pattern is required before execution.
 - Secure account authorization is required for staging.
 
 ## ChatGPT scheduled workflows
