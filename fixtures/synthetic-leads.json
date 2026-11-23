@@ -1,0 +1,29 @@
+[
+  {
+    "id": "lead-synth-001",
+    "company": "Example Lawn Care",
+    "contact": "Avery Example",
+    "email": "avery@example.test",
+    "service": "weekly lawn maintenance",
+    "source": "synthetic-web-form",
+    "consentToContact": false
+  },
+  {
+    "id": "lead-synth-002",
+    "company": "Sample Property Repairs",
+    "contact": "Jordan Sample",
+    "email": "jordan@example.test",
+    "service": "painting and minor repairs",
+    "source": "synthetic-web-form",
+    "consentToContact": true
+  },
+  {
+    "id": "lead-synth-003",
+    "company": "Demo Cleaning Services",
+    "contact": "Taylor Demo",
+    "email": "taylor@example.test",
+    "service": "office cleaning",
+    "source": "synthetic-web-form",
+    "consentToContact": false
+  }
+]
