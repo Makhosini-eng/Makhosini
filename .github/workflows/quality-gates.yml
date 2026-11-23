@@ -82,7 +82,10 @@ jobs:
       - name: Install Node dependencies without running package scripts
         run: npm install --ignore-scripts --no-audit --no-fund
       - name: Install analytics packages for licence metadata
-        run: python3 -m pip install --disable-pip-version-check --target ./site-packages -r requirements-analytics.txt
+        run: |
+          python3 -m venv trivy-venv
+          . trivy-venv/bin/activate
+          python -m pip install --disable-pip-version-check -r requirements-analytics.txt
       - name: Scan dependencies, configuration, secrets and licences
         run: |
           trivy fs --scanners vuln,misconfig,secret,license --include-dev-deps --severity HIGH,CRITICAL --ignore-unfixed --exit-code 0 --format table .
