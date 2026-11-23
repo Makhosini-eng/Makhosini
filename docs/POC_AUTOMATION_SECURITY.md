@@ -24,7 +24,7 @@
 
 ## Trivy security baseline
 
-The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. The first baseline is report-only (`--exit-code 0`) so findings can be reviewed and triaged without blocking unrelated development. Do not convert it to a blocking gate until the baseline is reviewed.
+The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. The first baseline is report-only (`--exit-code 0`) so findings can be reviewed and triaged without blocking unrelated development. The scan job generates an ephemeral npm lockfile for dependency analysis and uses scanner-recognised `requirements.txt` manifests for the optional Python packages. The lockfile is not committed; generate and review a committed lockfile before production adoption. Do not convert the scan to a blocking gate until findings are reviewed.
 
 ## Activepieces boundary
 
