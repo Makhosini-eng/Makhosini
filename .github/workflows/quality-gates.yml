@@ -79,11 +79,16 @@ jobs:
         uses: aquasecurity/setup-trivy@e07451d2e059ed86c2870430ea286b3a9e0bf241
         with:
           version: v0.76.2
-      - name: Resolve npm dependency graph for scanning
-        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Install Node dependencies without running package scripts
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Install analytics packages for licence metadata
+        run: |
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --disable-pip-version-check -r requirements-analytics.txt
       - name: Scan dependencies, configuration, secrets and licences
         run: |
-          trivy fs --scanners vuln,misconfig,secret,license --severity HIGH,CRITICAL --ignore-unfixed --exit-code 0 --format table .
+          trivy fs --scanners vuln,misconfig,secret,license --include-dev-deps --severity HIGH,CRITICAL --ignore-unfixed --exit-code 0 --format table .
 
 # The security scan is initially report-only. Review its first baseline and
 # triage findings before changing it into a blocking gate.
