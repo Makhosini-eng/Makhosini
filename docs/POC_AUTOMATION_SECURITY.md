@@ -8,11 +8,11 @@
 
 | Workstream | Current result | Evidence / limitation |
 |---|---|---|
-| Playwright | Integrated; CI passed | Quality Gates run #77 passed: 20 Node unit/policy tests, syntax checks and 2 Playwright browser tests. The browser tests exercise only the local synthetic approval-policy preview, not the production MVP. |
-| Trivy | CI scan passed; report-only baseline | Run #77 found 0 HIGH/CRITICAL vulnerabilities in the generated npm lockfile and the two direct Python requirements manifests. No supported IaC config files were detected; pip licence detection was skipped because Trivy did not find a site-packages directory. |
-| Activepieces | Evaluated; design prepared; not installed or executed | Community Edition licence is MIT outside Enterprise paths. Self-host requires Docker Compose v2 and at least 2 vCPU / 4 GB RAM. No authenticated task API or suitable runtime is present here. |
+| Playwright | Integrated; latest prior CI passed | Prior verified run #80 passed 20 Node tests and 2 local Playwright browser tests. New adapter tests are now included in `npm test`; the next CI run must verify them. |
+| Trivy | CI scan passed; report-only baseline | Prior run #80 found 0 HIGH/CRITICAL vulnerabilities in the generated npm lockfile and the two direct Python requirements manifests. No supported IaC config files were detected; pip licence detection was skipped because Trivy did not find a site-packages directory. |
+| Activepieces | Authenticated ingress client and contract added; runtime not connected | Client validates events, requires HTTPS and bearer auth, targets only `/events/task`, refuses redirects and does not retry automatically. It is unit-tested with synthetic fetch stubs. No deployed endpoint, secret, database, queue or Activepieces runtime has been configured or tested. |
 | Docling | Optional adapter and synthetic tests added; full parser not installed | MIT codebase, pinned 2.152.0. Models and their licences are separate; full PDF/model test is deferred due runtime and model-download cost. |
-| pandas | Optional reporting utility integrated; CI passed | Seven synthetic-data tests passed in run #77 with pandas 3.1.0 on Python 3.14.4. |
+| pandas | Optional reporting utility integrated; CI passed | Seven synthetic-data tests passed in prior CI with pandas 3.1.0. |
 
 ## Playwright browser tests
 
@@ -24,13 +24,13 @@
 
 ## Trivy security baseline
 
-The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. Run #77 completed successfully. Trivy v0.76.2 scanned the ephemeral npm lockfile (including development dependencies) and the direct Python manifests for pandas and Docling. It reported 0 HIGH/CRITICAL vulnerabilities for those targets. The scan remains report-only (`--exit-code 0`); this is not a full security certification. The misconfiguration scanner found no supported IaC configuration files, so no IaC misconfiguration result can be claimed. The pip licence scanner skipped package metadata because no site-packages directory was detected; direct Python code/package licences are documented separately in `docs/THIRD_PARTY_NOTICES.md`. The secret scanner was enabled, but its table output did not provide a separate target-level summary. The generated npm lockfile is ephemeral and not committed; generate and review committed lockfiles before production adoption. Docling's direct manifest was scanned, but its model assets and model-specific licences were not installed or scanned.
+The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. The latest verified scan reported 0 HIGH/CRITICAL vulnerabilities for the scanned npm and direct Python dependency targets. The scan remains report-only (`--exit-code 0`); this is not a full security certification. The misconfiguration scanner found no supported IaC configuration files, so no IaC misconfiguration result can be claimed. The pip licence scanner skipped package metadata because no site-packages directory was detected; direct Python code/package licences are documented separately in `docs/THIRD_PARTY_NOTICES.md`. The secret scanner was enabled, but its table output did not provide a separate target-level summary. The generated npm lockfile is ephemeral and not committed; generate and review committed lockfiles before production adoption. Docling's direct manifest was scanned, but its model assets and model-specific licences were not installed or scanned.
 
-## Activepieces boundary
+## Activepieces integration boundary
 
-The proposed flow is documented in `docs/ACTIVEPIECES_POC.md`. It accepts synthetic events, validates the schema, deduplicates on a stable event ID, creates an internal task through a future private adapter, and records an audit outcome. It has no outbound email/SMS/social action.
+The proposed workflow is documented in `docs/ACTIVEPIECES_POC.md`; the authenticated hand-off contract is in `docs/ACTIVEPIECES_INTEGRATION_CONTRACT.md`. The task engine Worker source exposes an authenticated `POST /events/task` endpoint guarded by `INGEST_TOKEN`; the new `src/adapters/activepieces-task-client.mjs` is the corresponding client. The adapter has no configured live endpoint or secret and has only been tested using a synthetic fetch stub. The Worker, database and queue have not been deployed or exercised together. Never expose an unauthenticated public webhook or store bearer secrets in flow exports or logs.
 
-The current task engine is a Node.js module, not an authenticated HTTP API. Do not expose it publicly to connect Activepieces. A private authenticated adapter with idempotency and an allow-listed action catalogue is a prerequisite.
+Task creation is not approval to execute an external action. Human approval remains a separate gate. No email, SMS, social publishing, payment, account-setting or deployment step is part of this flow.
 
 ## Docling boundary
 
