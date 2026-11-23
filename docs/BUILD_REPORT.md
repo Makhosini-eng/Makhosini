@@ -16,7 +16,7 @@ Date: 2026-11-23. Status: locally hardened preparation build; no live integratio
 - Integration design, security review and deployment runbook.
 
 ## Local verification
-- `npm test`: 15 passed, 0 failed.
+- `npm test`: 17 passed, 0 failed.
 - `npm run check`: syntax checks passed.
 - D1 schema validation: SQLite schema execution passed.
 
