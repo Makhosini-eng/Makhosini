@@ -45,6 +45,8 @@ npm run test:browser
 
 The GitHub Actions quality-gates workflow installs the pinned development dependency, installs Chromium, and runs unit tests, syntax checks and browser tests. The workflow has read-only repository permissions and no deployment or external-action steps.
 
+**Reproducibility note:** the direct Playwright package version is exact, but this POC does not yet commit a `package-lock.json`; CI deliberately disables lockfile generation. Generate and review a lockfile before adopting this dependency beyond the isolated POC.
+
 ### Trivy (manual, isolated runner only)
 
 ```sh
