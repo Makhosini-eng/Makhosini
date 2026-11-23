@@ -45,7 +45,7 @@ export default {
       if (parsed.error) return json({ error: parsed.error }, parsed.error === 'payload_too_large' ? 413 : 400);
       const body = parsed.value;
       if (!body || body.decision !== 'approve' || typeof body.approvedBy !== 'string' || !body.approvedBy.trim() || typeof body.approvalId !== 'string' || !body.approvalId.trim()) return json({ error: 'invalid_approval' }, 422);
-      const task = await env.DB.prepare('SELECT id,status,action,approval_required FROM tasks WHERE id = ?').bind(approvalMatch[1]).first();
+      const task = await env.DB.prepare('SELECT id,status,action,approval_required FROM tasks WHERE id = ?').bind(approvalMatch).first();
       if (!task) return json({ error: 'task_not_found' }, 404);
       if (!task.approval_required || task.status !== 'awaiting_approval') return json({ error: 'task_not_awaiting_approval' }, 409);
       const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
