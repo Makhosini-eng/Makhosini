@@ -9,10 +9,10 @@
 | Workstream | Current result | Evidence / limitation |
 |---|---|---|
 | Playwright | Integrated; CI verification pending | Localhost-only browser harness tests the actual approval policy. GitHub CI must run before claiming a pass. |
-| Trivy | CI scanner configured; first baseline pending | Trivy v0.76.1 scans vulnerabilities, misconfiguration, secrets and licences. Initial scan is report-only pending triage. |
+| Trivy | CI scanner configured; first baseline pending | Trivy v0.76.2 scans vulnerabilities, misconfiguration, secrets and licences. Initial scan is report-only pending triage. |
 | Activepieces | Evaluated; design prepared; not installed or executed | Community Edition licence is MIT outside Enterprise paths. Self-host requires Docker Compose v2 and at least 2 vCPU / 4 GB RAM. No authenticated task API or suitable runtime is present here. |
 | Docling | Optional adapter and synthetic tests added; full parser not installed | MIT codebase, pinned 2.152.0. Models and their licences are separate; full PDF/model test is deferred due runtime and model-download cost. |
-| pandas | Optional reporting utility and synthetic tests added | BSD-3-Clause, pinned 3.1.0. CI installs the optional analytics dependency and runs tests against synthetic transactions. |
+| pandas | Optional reporting utility and synthetic tests added; local tests passed under pandas 2.2.3; pinned 3.1.0 CI pending | BSD-3-Clause, pinned 3.1.0. The local test runtime had pandas 2.2.3; this is not verification of the pinned CI version. |
 
 ## Playwright browser tests
 
