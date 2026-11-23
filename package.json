@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "check": "node --check src/core.mjs && node --check src/worker.mjs && node --check src/queue-consumer.mjs && node --check playwright.config.mjs && node --check tests/browser/approval-preview-server.mjs && node --check tests/browser/approval-gate.spec.mjs",
+    "check": "node --check src/core.mjs && node --check src/worker.mjs && node --check src/queue-consumer.mjs && node --check src/adapters/activepieces-task-client.mjs && node --check playwright.config.mjs && node --check tests/browser/approval-preview-server.mjs && node --check tests/browser/approval-gate.spec.mjs",
     "test:browser": "playwright test"
   },
   "devDependencies": {
