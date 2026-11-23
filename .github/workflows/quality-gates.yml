@@ -16,9 +16,9 @@ concurrency:
 
 jobs:
   test:
-    name: Tests and syntax
+    name: Tests, syntax and browser policy checks
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     permissions:
       contents: read
     steps:
@@ -28,10 +28,16 @@ jobs:
         run: |
           node --version
           node -e "if (Number(process.versions.node.split('.')[0]) < 20) process.exit(1)"
-      - name: Run tests
+      - name: Install pinned development dependencies
+        run: npm install --ignore-scripts --no-audit --no-fund --package-lock=false
+      - name: Install Chromium for Playwright
+        run: npx playwright install --with-deps chromium
+      - name: Run unit and policy tests
         run: npm test
       - name: Check JavaScript syntax
         run: npm run check
+      - name: Run browser approval-gate tests
+        run: npm run test:browser
 
 # This workflow intentionally has no deployment, publishing, messaging,
 # secret access, or write-capable token permissions.
