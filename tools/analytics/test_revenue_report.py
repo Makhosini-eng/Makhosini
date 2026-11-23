@@ -34,6 +34,17 @@ class RevenueReportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "Mixed currencies"):
                 build_monthly_report(source)
 
+    def test_rejects_blank_currency(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            source = Path(temporary) / "blank.csv"
+            source.write_text(
+                "transaction_date,transaction_id,product,amount,currency,status\\n"
+                "2026-10-01,a,Service,10, ,paid\\n",
+                encoding="utf-8",
+            )
+            with self.assertRaisesRegex(ValueError, "currency cannot be blank"):
+                build_monthly_report(source)
+
     def test_rejects_duplicate_transaction_ids(self):
         with tempfile.TemporaryDirectory() as temporary:
             source = Path(temporary) / "duplicate.csv"
