@@ -8,11 +8,11 @@
 
 | Workstream | Current result | Evidence / limitation |
 |---|---|---|
-| Playwright | Integrated; CI verification pending | Localhost-only browser harness tests the actual approval policy. GitHub CI must run before claiming a pass. |
-| Trivy | CI scanner configured; first baseline pending | Trivy v0.76.2 scans vulnerabilities, misconfiguration, secrets and licences. Initial scan is report-only pending triage. |
+| Playwright | Integrated; CI passed | Quality Gates run #77 passed: 20 Node unit/policy tests, syntax checks and 2 Playwright browser tests. The browser tests exercise only the local synthetic approval-policy preview, not the production MVP. |
+| Trivy | CI scan passed; report-only baseline | Run #77 found 0 HIGH/CRITICAL vulnerabilities in the generated npm lockfile and the two direct Python requirements manifests. No supported IaC config files were detected; pip licence detection was skipped because Trivy did not find a site-packages directory. |
 | Activepieces | Evaluated; design prepared; not installed or executed | Community Edition licence is MIT outside Enterprise paths. Self-host requires Docker Compose v2 and at least 2 vCPU / 4 GB RAM. No authenticated task API or suitable runtime is present here. |
 | Docling | Optional adapter and synthetic tests added; full parser not installed | MIT codebase, pinned 2.152.0. Models and their licences are separate; full PDF/model test is deferred due runtime and model-download cost. |
-| pandas | Optional reporting utility and synthetic tests added; local tests passed under pandas 2.2.3; pinned 3.1.0 CI pending | BSD-3-Clause, pinned 3.1.0. The local test runtime had pandas 2.2.3; this is not verification of the pinned CI version. |
+| pandas | Optional reporting utility integrated; CI passed | Seven synthetic-data tests passed in run #77 with pandas 3.1.0 on Python 3.14.4. |
 
 ## Playwright browser tests
 
@@ -24,7 +24,7 @@
 
 ## Trivy security baseline
 
-The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. The first baseline is report-only (`--exit-code 0`) so findings can be reviewed and triaged without blocking unrelated development. The scan job installs Node dependencies with package scripts disabled, installs the optional pandas dependency into an isolated Python environment, and uses scanner-recognised `requirements.txt` manifests. Trivy includes npm development dependencies. The generated npm lockfile and installed environments are ephemeral and are not committed; generate and review committed lockfiles before production adoption. The repository has no supported IaC configuration targets yet, so the misconfiguration scanner may report no config files. Docling remains manifest-scanned for vulnerabilities but is not installed solely to harvest model-heavy licence metadata. Do not convert the scan to a blocking gate until findings are reviewed.
+The GitHub Actions workflow installs Trivy `v0.76.2` through a pinned setup action commit. It scans the repository for vulnerability, misconfiguration, secret and licence findings at HIGH and CRITICAL severity. Run #77 completed successfully. Trivy v0.76.2 scanned the ephemeral npm lockfile (including development dependencies) and the direct Python manifests for pandas and Docling. It reported 0 HIGH/CRITICAL vulnerabilities for those targets. The scan remains report-only (`--exit-code 0`); this is not a full security certification. The misconfiguration scanner found no supported IaC configuration files, so no IaC misconfiguration result can be claimed. The pip licence scanner skipped package metadata because no site-packages directory was detected; direct Python code/package licences are documented separately in `docs/THIRD_PARTY_NOTICES.md`. The secret scanner was enabled, but its table output did not provide a separate target-level summary. The generated npm lockfile is ephemeral and not committed; generate and review committed lockfiles before production adoption. Docling's direct manifest was scanned, but its model assets and model-specific licences were not installed or scanned.
 
 ## Activepieces boundary
 
