@@ -1,0 +1,12 @@
+{
+  "name": "capital-king-hybrid-engine",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Local-first prototype for the CAPITAL KING hybrid specialist task engine",
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check src/core.mjs && node --check src/worker.mjs && node --check src/queue-consumer.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

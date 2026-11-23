@@ -1,0 +1,25 @@
+# TEMPLATE ONLY. No account resources are created by this file.
+name = "capital-king-task-engine"
+main = "src/worker.mjs"
+compatibility_date = "2026-11-23"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+APP_MODE = "safe-preparation"
+EXECUTION_MODE = "disabled"
+# INGEST_TOKEN and ADMIN_TOKEN must be set with the provider secret manager.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "capital-king-tasks"
+database_id = "REPLACE_AFTER_APPROVED_DATABASE_CREATION"
+
+[[queues.producers]]
+binding = "TASK_QUEUE"
+queue = "capital-king-tasks"
+
+[[queues.consumers]]
+queue = "capital-king-tasks"
+max_batch_size = 10
+max_batch_timeout = 5
+max_retries = 2
