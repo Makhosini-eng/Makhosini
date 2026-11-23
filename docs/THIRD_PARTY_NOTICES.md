@@ -30,7 +30,7 @@ This file records direct optional/test dependencies. It does not replace the lic
 ## Aqua Security Trivy
 
 - Project: https://github.com/aquasecurity/trivy
-- Scanner version configured in CI: `v0.76.1`
+- Scanner version configured in CI: `v0.76.2`
 - Licence: Apache License 2.0
 - Installer action: https://github.com/aquasecurity/setup-trivy
 - Installer action pinned to commit: `e07451d2e059ed86c2870430ea286b3a9e0bf241`
