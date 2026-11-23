@@ -26,7 +26,7 @@ The documented Docker Compose self-host option requires Docker Compose v2 and at
 
 ## Integration boundary
 
-The current repository's task engine is a Node.js module, not a deployed authenticated HTTP API. Therefore an Activepieces flow cannot safely call it yet. The next engineering dependency is a narrowly scoped internal adapter with authentication, schema validation, idempotency and an allow-listed action catalogue. Do not expose the task engine publicly to make this POC work.
+The repository includes a Cloudflare Worker source with an authenticated `POST /events/task` ingress guarded by `INGEST_TOKEN`, plus a client adapter in `src/adapters/activepieces-task-client.mjs`. The adapter has synthetic unit tests. However, no Worker endpoint, secret, database, queue or Activepieces runtime has been deployed or exercised together. Do not expose an unauthenticated public webhook to make this POC work. See `docs/ACTIVEPIECES_INTEGRATION_CONTRACT.md` for the event contract and deployment gate.
 
 ## Acceptance checklist
 
